@@ -1,0 +1,58 @@
+{
+  "name": "work-timer",
+  "displayName": "摸鱼计时器",
+  "description": "停止内卷！开始摸鱼！",
+  "version": "0.0.1",
+  "publisher": "William Ma",
+  "engines": {
+    "vscode": "^1.47.3"
+  },
+  "icon": "images/icon.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.setOffDutyTime",
+        "title": "设置下班时间"
+      }
+    ],
+    "configuration": {
+      "title": "WorkTimer",
+      "properties": {
+        "worktimer.offDutyTime": {
+          "type": "string",
+          "default": "18:00",
+          "format": "date",
+          "description": "输入你的下班时间(24小时制)"
+        },
+        "worktimer.nickName": {
+          "type": "string",
+          "default": "打工人",
+          "description": "怎么称呼你"
+        }
+      },
+      "icons": {
+        "distro-ubuntu": {
+          "description": "Ubuntu icon",
+          "default": {
+            "fontPath": "./icon.woff",
+            "fontCharacter": "\\e900"
+          }
+        },
+        "distro-fedora": {
+          "description": "Ubuntu icon",
+          "default": {
+            "fontPath": "./icon.woff",
+            "fontCharacter": "\\e906"
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "moment": "^2.29.4"
+  }
+}
