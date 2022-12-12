@@ -63,8 +63,13 @@ function updateStatusBarItem () {
   const minute = parseInt((timediff / 60) % 60);
   const second = timediff % 60;
   const text = timerFilter(hour) + "时" + timerFilter(minute) + "分" + timerFilter(second) + "秒"
-  myStatusBarItem.text = `$(twitter)${isOffDuty ? '已经加班 ' : ''}${timerFilter(hour) + "时" + timerFilter(minute) + "分"}`; // 显示文本
-  myStatusBarItem.tooltip = `${isOffDuty ? '已经加班 ' : ''}${text}` // 浮动提示
+  myStatusBarItem.text = `${isOffDuty ? '🏃 已经加班 ' : '👨‍💻'}${timerFilter(hour) + "时" + timerFilter(minute) + "分"}`; // 显示文本
+  myStatusBarItem.tooltip = `⏲️ ${isOffDuty ? '已经加班' : '距离下班还有'} ${text}` // 浮动提示
+  //todo 完善点击后的指令…… 点击后弹出下拉选项  进入多级菜单
+  myStatusBarItem.command = {
+    title: 'Change stock',
+    command: 'extension.setOffDutyTime',
+  };
   myStatusBarItem.show();
 }
 
