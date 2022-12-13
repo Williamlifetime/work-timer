@@ -1,9 +1,21 @@
 {
   "name": "work-timer",
-  "displayName": "摸鱼计时器",
+  "displayName": "打工计时器",
   "description": "停止内卷！开始摸鱼！",
-  "version": "0.0.1",
-  "publisher": "William Ma",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Williamlifetime/work-timer.git"
+  },
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "打工计时器",
+    "摸鱼",
+    "久坐提醒",
+    "timer",
+    "workTimer"
+  ],
+  "publisher": "WilliamMa",
   "engines": {
     "vscode": "^1.47.3"
   },
@@ -11,48 +23,59 @@
   "activationEvents": [
     "onStartupFinished"
   ],
-  "main": "./extension.js",
+  "categories": [
+    "Other"
+  ],
+  "main": "./src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.setOffDutyTime",
-        "title": "设置下班时间"
+        "command": "workTimer.menu",
+        "title": "⏱️打工计时器"
       }
     ],
     "configuration": {
-      "title": "WorkTimer",
+      "title": "打工计时器",
       "properties": {
         "worktimer.offDutyTime": {
           "type": "string",
           "default": "18:00",
-          "format": "date",
           "description": "输入你的下班时间(24小时制)"
+        },
+        "worktimer.reminderTimeBeforeOffDuty": {
+          "type": "number",
+          "default": 30,
+          "description": "下班前多久告诉你(分钟)"
         },
         "worktimer.nickName": {
           "type": "string",
           "default": "打工人",
           "description": "怎么称呼你"
-        }
-      },
-      "icons": {
-        "distro-ubuntu": {
-          "description": "Ubuntu icon",
-          "default": {
-            "fontPath": "./icon.woff",
-            "fontCharacter": "\\e900"
-          }
         },
-        "distro-fedora": {
-          "description": "Ubuntu icon",
-          "default": {
-            "fontPath": "./icon.woff",
-            "fontCharacter": "\\e906"
-          }
+        "worktimer.showWelcome": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否在加载插件的时候展示欢迎语"
+        },
+        "worktimer.showReminderTimeBeforeOffDuty": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否需要在下班前告诉你"
         }
       }
     }
   },
   "dependencies": {
     "moment": "^2.29.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.16.4"
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.js --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "test-compile": "tsc -p ./"
   }
 }
