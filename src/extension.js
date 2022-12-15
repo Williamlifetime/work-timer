@@ -67,6 +67,64 @@ function setNickNameHandle (command) {
 }
 
 /**
+ * 是与否选项菜单
+ * @param {string} key 
+ */
+function switchHandle (key) {
+  vscode.window.showQuickPick(['开启', '关闭'], {
+    placeHolder: '选择你的操作'
+  }).then(res => {
+    const keyArr = key.split('.')
+    switch (res) {
+      case '开启':
+        globalState.default[keyArr[1]] = true
+        config.update(key, true, true)
+        vscode.window.showInformationMessage('设置成功~')
+        break;
+      case '关闭':
+        globalState.default[keyArr[1]] = false
+        config.update(key, false, true)
+        vscode.window.showInformationMessage('设置成功~')
+        break;
+      default:
+        break;
+    }
+  })
+}
+
+/**
+ * 设置分钟时间
+ * @param {*} command 
+ */
+function setMinuteHandle (key) {
+  const keyArr = key.split('.')
+  let text = ''
+  switch (key) {
+    case 'worktimer.sedentaryReminderTime':
+      text = '多久提醒你该起来活动一下(分钟) 例如 60'
+      break;
+    case 'worktimer.sedentaryReminderTime':
+      text = '下班前多久告诉你(分钟) 例如 60'
+      break;
+    default:
+      break;
+  }
+  vscode.window.showInputBox({
+    placeHolder: 'mm',
+    prompt: text,
+    validateInput: (val) => {
+      if (!(/^\d+$/.test(val)) && val > 0) {
+        return '请输入正确的时间'
+      }
+    }
+  }).then(text => {
+    if (!text) return
+    globalState.default[keyArr[1]] = Number(text)
+    config.update(key, Number(text), true)
+  })
+}
+
+/**
  * 菜单
  * @param {*} command 
  */
@@ -74,6 +132,8 @@ function menuHandle (command) {
   const options = [
     '设置下班时间',
     '设置自定义昵称',
+    '是否开启久坐提醒',
+    '设置久坐提醒时间',
   ]
   vscode.window.showQuickPick(options, {
     placeHolder: '选择你的操作'
@@ -84,6 +144,12 @@ function menuHandle (command) {
         break;
       case '设置自定义昵称':
         setNickNameHandle()
+        break
+      case '是否开启久坐提醒':
+        switchHandle('worktimer.showSedentaryReminder')
+        break
+      case '设置久坐提醒时间':
+        setMinuteHandle('worktimer.sedentaryReminderTime')
         break
       default:
         break;

@@ -61,6 +61,16 @@
           "type": "boolean",
           "default": true,
           "description": "是否需要在下班前告诉你"
+        },
+        "worktimer.showSedentaryReminder": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否开启久坐提醒"
+        },
+        "worktimer.sedentaryReminderTime": {
+          "type": "number",
+          "default": 60,
+          "description": "多久提示你该起来活动一下(分钟)"
         }
       }
     }

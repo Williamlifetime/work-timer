@@ -9,6 +9,8 @@ let showWelcome = config.get('worktimer.showWelcome'); // 是否展示欢迎语
 let isOffDuty = false // 是否下班
 let reminderTimeBeforeOffDuty = config.get('worktimer.reminderTimeBeforeOffDuty'); // 下班前多久提示
 let showReminderTimeBeforeOffDuty = config.get('worktimer.showReminderTimeBeforeOffDuty'); // 是否在下班前提示
+let showSedentaryReminder = config.get('worktimer.showSedentaryReminder'); // 是否开启久坐提醒
+let sedentaryReminderTime = config.get('worktimer.sedentaryReminderTime'); // 多久提示你该起来活动一下(分钟)
 
 exports.default = {
     /**下班时间*/
@@ -23,4 +25,8 @@ exports.default = {
     reminderTimeBeforeOffDuty,
     /**是否在下班前提示*/
     showReminderTimeBeforeOffDuty,
+    /**是否开启久坐提醒*/
+    showSedentaryReminder,
+    /**多久提示你该起来活动一下(分钟)*/
+    sedentaryReminderTime,
 };
