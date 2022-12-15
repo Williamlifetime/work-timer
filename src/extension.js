@@ -103,7 +103,7 @@ function setMinuteHandle (key) {
     case 'worktimer.sedentaryReminderTime':
       text = '多久提醒你该起来活动一下(分钟) 例如 60'
       break;
-    case 'worktimer.sedentaryReminderTime':
+    case 'worktimer.reminderTimeBeforeOffDuty':
       text = '下班前多久告诉你(分钟) 例如 60'
       break;
     default:
