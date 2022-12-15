@@ -1,5 +1,4 @@
 node_modules
-.out
 
 # Log files
 npm-debug.log*
@@ -14,3 +13,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+out/
