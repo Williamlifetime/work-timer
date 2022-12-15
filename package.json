@@ -42,11 +42,6 @@
           "default": "18:00",
           "description": "输入你的下班时间(24小时制)"
         },
-        "worktimer.reminderTimeBeforeOffDuty": {
-          "type": "number",
-          "default": 30,
-          "description": "下班前多久告诉你(分钟)"
-        },
         "worktimer.nickName": {
           "type": "string",
           "default": "打工人",
@@ -56,6 +51,11 @@
           "type": "boolean",
           "default": true,
           "description": "是否在加载插件的时候展示欢迎语"
+        },
+        "worktimer.reminderTimeBeforeOffDuty": {
+          "type": "number",
+          "default": 30,
+          "description": "下班前多久告诉你(分钟)"
         },
         "worktimer.showReminderTimeBeforeOffDuty": {
           "type": "boolean",

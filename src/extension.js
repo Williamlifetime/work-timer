@@ -131,6 +131,7 @@ function setMinuteHandle (key) {
 function menuHandle (command) {
   const options = [
     '设置下班时间',
+    '设置下班前提醒时间',
     '设置自定义昵称',
     '是否开启久坐提醒',
     '设置久坐提醒时间',
@@ -141,6 +142,9 @@ function menuHandle (command) {
     switch (res) {
       case '设置下班时间':
         setOffDutyTimeHandle()
+        break;
+      case '设置下班前提醒时间':
+        setMinuteHandle('worktimer.reminderTimeBeforeOffDuty')
         break;
       case '设置自定义昵称':
         setNickNameHandle()
