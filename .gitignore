@@ -1,4 +1,5 @@
 node_modules
+.out
 
 # Log files
 npm-debug.log*
