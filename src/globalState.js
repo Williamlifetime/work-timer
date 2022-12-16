@@ -11,6 +11,10 @@ let reminderTimeBeforeOffDuty = config.get('worktimer.reminderTimeBeforeOffDuty'
 let showReminderTimeBeforeOffDuty = config.get('worktimer.showReminderTimeBeforeOffDuty'); // 是否在下班前提示
 let showSedentaryReminder = config.get('worktimer.showSedentaryReminder'); // 是否开启久坐提醒
 let sedentaryReminderTime = config.get('worktimer.sedentaryReminderTime'); // 多久提示你该起来活动一下(分钟)
+let showDrinkWaterReminder = config.get('worktimer.showDrinkWaterReminder'); // 是否开启喝水提醒
+let drinkWaterReminderTime = config.get('worktimer.drinkWaterReminderTime'); // 多久提示你喝水(分钟)
+let drinkingWaterTotal = config.get('worktimer.drinkingWaterTotal'); // 每日饮水总量(ml)
+let cupCapacity = config.get('worktimer.cupCapacity'); // 饮水容器容量(ml)
 
 exports.default = {
     /**下班时间*/
@@ -29,4 +33,12 @@ exports.default = {
     showSedentaryReminder,
     /**多久提示你该起来活动一下(分钟)*/
     sedentaryReminderTime,
+    /**是否开启喝水提醒*/
+    showDrinkWaterReminder,
+    /**多久提示你喝水(分钟)*/
+    drinkWaterReminderTime,
+    /**每日饮水总量(ml)*/
+    drinkingWaterTotal,
+    /**饮水容器容量(ml)*/
+    cupCapacity,
 };

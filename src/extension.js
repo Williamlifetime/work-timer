@@ -3,12 +3,12 @@ const moment = require('moment')
 const globalState = require("./globalState");
 const utils = require("./utils");
 const statusBar = require("./statusbar/statusBar");
-const config = vscode.workspace.getConfiguration()
+const menu = require("./menu/menu");
 moment.locale('zh-cn')
 
 exports.activate = function (context) {
-  const menu = vscode.commands.registerCommand('workTimer.menu', menuHandle);
-  context.subscriptions.push(menu);
+  const menuCommand = vscode.commands.registerCommand('workTimer.menu', menu.menuHandle);
+  context.subscriptions.push(menuCommand);
   // 监听配置项修改
   vscode.workspace.onDidChangeConfiguration(function (event) {
     const configList = ['worktimer.offDutyTime', 'worktimer.reminderTimeBeforeOffDuty', 'worktimer.nickName', 'worktimer.showWelcome', 'worktimer.showReminderTimeBeforeOffDuty'];
@@ -22,143 +22,6 @@ exports.activate = function (context) {
   setInterval(() => {
     statusBar.updateStatusBarItem()
   }, 1000);
-}
-
-/**
- * 设置下班时间
- * @param {*} command 
- */
-function setOffDutyTimeHandle (command) {
-  vscode.window.showInputBox({
-    placeHolder: 'HH:mm',
-    prompt: '输入你的下班时间(24小时制)例如 18:30',
-    validateInput: (val) => {
-      if (!(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val))) {
-        return '请输入正确的24小时制时间'
-      }
-    }
-  }).then(text => {
-    if (!text) return
-    globalState.default.offDutyTime = text
-    config.update('worktimer.offDutyTime', text, true)
-    updateStatusBarItem()
-  })
-}
-
-/**
- * 设置昵称
- * @param {*} command 
- */
-function setNickNameHandle (command) {
-  vscode.window.showInputBox({
-    placeHolder: '你的昵称',
-    prompt: '怎么称呼你',
-    validateInput: (val) => {
-      if (!val) {
-        return '请输入昵称'
-      }
-    }
-  }).then(text => {
-    if (!text) return
-    globalState.default.nickName = text
-    config.update('worktimer.nickName', text, true)
-    vscode.window.showInformationMessage(`尊敬的${text}~昵称设置成功~`)
-  })
-}
-
-/**
- * 是与否选项菜单
- * @param {string} key 
- */
-function switchHandle (key) {
-  vscode.window.showQuickPick(['开启', '关闭'], {
-    placeHolder: '选择你的操作'
-  }).then(res => {
-    const keyArr = key.split('.')
-    switch (res) {
-      case '开启':
-        globalState.default[keyArr[1]] = true
-        config.update(key, true, true)
-        vscode.window.showInformationMessage('设置成功~')
-        break;
-      case '关闭':
-        globalState.default[keyArr[1]] = false
-        config.update(key, false, true)
-        vscode.window.showInformationMessage('设置成功~')
-        break;
-      default:
-        break;
-    }
-  })
-}
-
-/**
- * 设置分钟时间
- * @param {*} command 
- */
-function setMinuteHandle (key) {
-  const keyArr = key.split('.')
-  let text = ''
-  switch (key) {
-    case 'worktimer.sedentaryReminderTime':
-      text = '多久提醒你该起来活动一下(分钟) 例如 60'
-      break;
-    case 'worktimer.reminderTimeBeforeOffDuty':
-      text = '下班前多久告诉你(分钟) 例如 60'
-      break;
-    default:
-      break;
-  }
-  vscode.window.showInputBox({
-    placeHolder: 'mm',
-    prompt: text,
-    validateInput: (val) => {
-      if (!(/^\d+$/.test(val)) && val > 0) {
-        return '请输入正确的时间'
-      }
-    }
-  }).then(text => {
-    if (!text) return
-    globalState.default[keyArr[1]] = Number(text)
-    config.update(key, Number(text), true)
-  })
-}
-
-/**
- * 菜单
- * @param {*} command 
- */
-function menuHandle (command) {
-  const options = [
-    '设置下班时间',
-    '设置下班前提醒时间',
-    '设置自定义昵称',
-    '是否开启久坐提醒',
-    '设置久坐提醒时间',
-  ]
-  vscode.window.showQuickPick(options, {
-    placeHolder: '选择你的操作'
-  }).then(res => {
-    switch (res) {
-      case '设置下班时间':
-        setOffDutyTimeHandle()
-        break;
-      case '设置下班前提醒时间':
-        setMinuteHandle('worktimer.reminderTimeBeforeOffDuty')
-        break;
-      case '设置自定义昵称':
-        setNickNameHandle()
-        break
-      case '是否开启久坐提醒':
-        switchHandle('worktimer.showSedentaryReminder')
-        break
-      case '设置久坐提醒时间':
-        setMinuteHandle('worktimer.sedentaryReminderTime')
-        break
-      default:
-        break;
-    }
-  })
 }
 
 /**

@@ -71,6 +71,26 @@
           "type": "number",
           "default": 60,
           "description": "多久提示你该起来活动一下(分钟)"
+        },
+        "worktimer.drinkWaterReminderTime": {
+          "type": "number",
+          "default": 120,
+          "description": "多久提醒你喝水(分钟)"
+        },
+        "worktimer.showDrinkWaterReminder": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否开启喝水提醒"
+        },
+        "worktimer.drinkingWaterTotal": {
+          "type": "number",
+          "default": 1700,
+          "description": "每日饮水总量(ml)"
+        },
+        "worktimer.cupCapacity": {
+          "type": "number",
+          "default": 300,
+          "description": "饮水容器容量(ml)"
         }
       }
     }
