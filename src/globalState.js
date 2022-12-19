@@ -14,7 +14,9 @@ let sedentaryReminderTime = config.get('worktimer.sedentaryReminderTime'); // �
 let showDrinkWaterReminder = config.get('worktimer.showDrinkWaterReminder'); // 是否开启喝水提醒
 let drinkWaterReminderTime = config.get('worktimer.drinkWaterReminderTime'); // 多久提示你喝水(分钟)
 let drinkingWaterTotal = config.get('worktimer.drinkingWaterTotal'); // 每日饮水总量(ml)
+let drunkWaterTotal = config.get('worktimer.drunkWaterTotal'); // 今日饮水总量(ml)
 let cupCapacity = config.get('worktimer.cupCapacity'); // 饮水容器容量(ml)
+let cacheDate = config.get('worktimer.cacheDate'); // 缓存日期
 
 exports.default = {
     /**下班时间*/
@@ -39,6 +41,10 @@ exports.default = {
     drinkWaterReminderTime,
     /**每日饮水总量(ml)*/
     drinkingWaterTotal,
+    /**今日饮水总量(ml)*/
+    drunkWaterTotal,
     /**饮水容器容量(ml)*/
     cupCapacity,
+    /**缓存日期*/
+    cacheDate,
 };

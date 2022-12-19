@@ -31,7 +31,11 @@ function updateStatusBarItem () {
     drinkWater.drinkWaterReminderTimeHandle(now)
     reminderTimeBeforeOffDutyHandle(hour, minute, second)
     statusBar.text = `${globalState.default.isOffDuty ? '🏃 已经加班 ' : '👨‍💻'}${utils.timerFilter(hour) + "时" + utils.timerFilter(minute) + "分"}`; // 显示文本
-    statusBar.tooltip = `⏲️ ${globalState.default.isOffDuty ? '已经加班' : '距离下班还有'} ${text}` // 浮动提示
+    // 浮动提示
+    statusBar.tooltip =
+        `⏲️ ${globalState.default.isOffDuty ? '已经加班' : '距离下班还有'} ${text}` +
+        drinkWater.drinkWaterText()
+            .join('\r\n-----------------------------\r\n')
     statusBar.command = {
         command: 'workTimer.menu',
     };

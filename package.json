@@ -87,10 +87,20 @@
           "default": 1700,
           "description": "每日饮水总量(ml)"
         },
+        "worktimer.drunkWaterTotal": {
+          "type": "number",
+          "default": 0,
+          "description": "今日已饮水总量(ml)"
+        },
         "worktimer.cupCapacity": {
           "type": "number",
           "default": 300,
           "description": "饮水容器容量(ml)"
+        },
+        "worktimer.cacheDate": {
+          "type": "string",
+          "default": "2022-12-01",
+          "description": "缓存日期"
         }
       }
     }

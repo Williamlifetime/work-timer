@@ -1,6 +1,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 
 const vscode = require('vscode')
+const moment = require('moment')
 const globalState = require("./globalState");
 const config = vscode.workspace.getConfiguration()
 
@@ -141,6 +142,18 @@ function accDiv (arg1, arg2) {
   return (r1 / r2) * Math.pow(10, t2 - t1)
 }
 
+/**
+ * 判断是否和缓存日期是同一天(传入moment对象)
+ * @param {*} 比较日期
+ * @returns {boolean} 是否是同一天
+ */
+function isSameDay (date) {
+  if (date.isSame(moment(globalState.default.cacheDate), 'day')) {
+    return true
+  }
+  return false
+}
+
 exports.refreshData = refreshData;
 exports.timerFilter = timerFilter;
 exports.setMinuteHandle = setMinuteHandle;
@@ -149,3 +162,4 @@ exports.accAdd = accAdd;
 exports.accSub = accSub;
 exports.accMul = accMul;
 exports.accDiv = accDiv;
+exports.isSameDay = isSameDay;

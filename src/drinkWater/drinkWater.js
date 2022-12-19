@@ -5,16 +5,26 @@ const moment = require('moment')
 const utils = require('../utils')
 const globalState = require("../globalState");
 
-/**上次喝水提醒的时间 */
-let lastCheckTime = moment()
 /**提醒中 */
 let processing = false
+/**今日饮水目标是否完成 */
+let isComplete = false
 /**持续工作系数 */
 let delayNum = 1
-/**今日剩余饮水总量 */
-let drinkingWaterTotal = globalState.default.drinkingWaterTotal
+/**今日目标饮水总量 */
+const drinkingWaterTotal = function () {
+    return globalState.default.drinkingWaterTotal
+}
+/**今日已饮水总量 */
+const drunkWaterTotal = function () {
+    return globalState.default.drunkWaterTotal
+}
 /**饮水容器容量 */
-let cupCapacity = globalState.default.cupCapacity
+let cupCapacity = function () {
+    return globalState.default.cupCapacity
+}
+/**今日剩余饮水总量 */
+let surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal()) || 0
 
 
 /**
@@ -22,24 +32,49 @@ let cupCapacity = globalState.default.cupCapacity
  * @param {Date} 当前时间 
  */
 function drinkWaterReminderTimeHandle (now) {
-    // 如果不同日的话 重置饮水总量
-    if (!now.isSame(lastCheckTime, 'day')) {
-        drinkingWaterTotal = globalState.default.drinkingWaterTotal
+    // 如果跨日的话，重置剩余饮水总量
+    if (!utils.isSameDay(now)) {
+        isComplete = false
+        globalState.default.drunkWaterTotal = 0
+        globalState.default.cacheDate = moment().format()
     }
-    if (!globalState.default.showDrinkWaterReminder) return
-    const timediff = now.diff(lastCheckTime, 'minutes')
+    if (drunkWaterTotal() > drinkingWaterTotal()) {
+        isComplete = true
+    }
+    if (!globalState.default.showDrinkWaterReminder || isComplete) return
+    const timediff = now.diff(moment(globalState.default.cacheDate), 'minutes')
+    surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal())
     if (timediff >= utils.accMul(delayNum, globalState.default.drinkWaterReminderTime) && !processing) {
         processing = true
         vscode.window.showInformationMessage(`🥤 喝水时间到！速速拿起你的水杯饮水！`, ...['喝完了', '等会儿再喝']).then(Selection => {
             processing = false
             if (Selection === '喝完了') {
-                lastCheckTime = moment()
-                drinkingWaterTotal = utils.accSub(drinkingWaterTotal, cupCapacity)
+                delayNum = 1
+                globalState.default.cacheDate = moment().format()
+                if (surplusDrinkingWater > 0) {
+                    globalState.default.drunkWaterTotal = utils.accAdd(drunkWaterTotal(), cupCapacity())
+                    surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal())
+                    if (surplusDrinkingWater <= 0) {
+                        vscode.window.showInformationMessage(`🏅 好耶ヽ(✿ﾟ▽ﾟ)ノ今天的喝水目标达成！`)
+                        isComplete = true
+                    }
+                }
             } else {
-                //todo 现在还没有处理饮水总量的逻辑  要处理喝了多少 剩了多少 多喝了多少 并且在 tooltip 中进行展示   单独计量喝水的操作？额外喝水的量
+                delayNum += 1
             }
         })
     }
 }
 
+
+function drinkWaterText () {
+    const textArr = [
+        ,
+        isComplete ? '今日饮水目标已达成！' : `今日剩余饮水目标：${surplusDrinkingWater} ml`,
+        `今日已饮水： ${drunkWaterTotal()} ml`,
+    ]
+    return textArr
+}
+
 exports.drinkWaterReminderTimeHandle = drinkWaterReminderTimeHandle;
+exports.drinkWaterText = drinkWaterText;

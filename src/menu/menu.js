@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const moment = require('moment');
 const utils = require("../utils");
 const globalState = require("../globalState");
 const config = vscode.workspace.getConfiguration()
@@ -93,6 +94,9 @@ function drinkWaterMenu () {
     const options = [
         '是否开启喝水提醒',
         '设置喝水提醒时间',
+        '设置每日饮水目标',
+        '设置水杯容量',
+        '添加本次喝水量',
     ]
     vscode.window.showQuickPick(options, {
         placeHolder: '选择你的操作'
@@ -103,6 +107,15 @@ function drinkWaterMenu () {
                 break
             case '设置喝水提醒时间':
                 utils.setMinuteHandle('worktimer.drinkWaterReminderTime')
+                break
+            case '设置每日饮水目标':
+                setDrinkingWaterTarget('worktimer.drinkingWaterTotal')
+                break
+            case '设置水杯容量':
+                setDrinkingWaterTarget('worktimer.cupCapacity')
+                break
+            case '添加本次喝水量':
+                setDrinkingWaterTarget('worktimer.drunkWaterTotal')
                 break
             default:
                 break;
@@ -147,6 +160,52 @@ function setNickNameHandle (command) {
         globalState.default.nickName = text
         config.update('worktimer.nickName', text, true)
         vscode.window.showInformationMessage(`尊敬的${text}~昵称设置成功~`)
+    })
+}
+
+/**
+ * 设置饮水数值
+ * @param {string} 要设置的饮水方法key名
+ */
+function setDrinkingWaterTarget (type) {
+    let params = {
+        placeHolder: '',
+        prompt: ''
+    }
+    switch (type) {
+        case 'worktimer.drinkingWaterTotal':
+            params.placeHolder = `请输入每日饮水目标总量(ml)`
+            params.prompt = '每日饮水目标总量'
+            break;
+        case 'worktimer.cupCapacity':
+            params.placeHolder = `请输入水杯容量(ml)`
+            params.prompt = '单次喝水的数量'
+            break;
+        case 'worktimer.drunkWaterTotal':
+            params.placeHolder = `请输入本次喝水容量(ml)`
+            params.prompt = '填入刚刚在定时计划外喝水的容量'
+            break;
+        default:
+            break;
+    }
+    vscode.window.showInputBox({
+        placeHolder: params.placeHolder,
+        prompt: params.prompt,
+        validateInput: (val) => {
+            if (!val) {
+                return '请输入数量'
+            } else if (!(/^\+?[1-9]\d*$/.test(val))) {
+                return '请输入正整数'
+            }
+        }
+    }).then(text => {
+        if (!text) return
+        const keyArr = type.split('.')
+        if (type === 'worktimer.drunkWaterTotal') {
+            text = utils.accAdd(globalState.default.drunkWaterTotal, text)
+        }
+        globalState.default[keyArr[1]] = Number(text)
+        config.update(type, Number(text), true)
     })
 }
 
