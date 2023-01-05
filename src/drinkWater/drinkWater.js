@@ -35,8 +35,8 @@ function drinkWaterReminderTimeHandle (now) {
     // 如果跨日的话，重置剩余饮水总量
     if (!utils.isSameDay(now)) {
         isComplete = false
-        globalState.default.drunkWaterTotal = 0
-        globalState.default.cacheDate = moment().format()
+        utils.setConfig('worktimer.drunkWaterTotal', 0, true)
+        utils.setConfig('worktimer.cacheDate', moment().format(), true)
     }
     if (drunkWaterTotal() > drinkingWaterTotal()) {
         isComplete = true
@@ -50,9 +50,9 @@ function drinkWaterReminderTimeHandle (now) {
             processing = false
             if (Selection === '喝完了') {
                 delayNum = 1
-                globalState.default.cacheDate = moment().format()
+                utils.setConfig('worktimer.cacheDate', moment().format(), true)
                 if (surplusDrinkingWater > 0) {
-                    globalState.default.drunkWaterTotal = utils.accAdd(drunkWaterTotal(), cupCapacity())
+                    utils.setConfig('worktimer.drunkWaterTotal', utils.accAdd(drunkWaterTotal(), cupCapacity()), true)
                     surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal())
                     if (surplusDrinkingWater <= 0) {
                         vscode.window.showInformationMessage(`🏅 好耶ヽ(✿ﾟ▽ﾟ)ノ今天的喝水目标达成！`)
@@ -78,3 +78,4 @@ function drinkWaterText () {
 
 exports.drinkWaterReminderTimeHandle = drinkWaterReminderTimeHandle;
 exports.drinkWaterText = drinkWaterText;
+exports.delayNum = delayNum;
