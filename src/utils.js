@@ -45,7 +45,6 @@ function timerFilter (params) {
  * @param {*} 功能的key 
  */
 function setMinuteHandle (key) {
-  const keyArr = key.split('.')
   let text = ''
   switch (key) {
     case 'worktimer.sedentaryReminderTime':
