@@ -5,6 +5,7 @@ const moment = require('moment');
 const utils = require("../utils");
 const globalState = require("../globalState");
 const config = vscode.workspace.getConfiguration()
+const drinkWater = require("../drinkWater/drinkWater")
 
 /**
  * 总菜单
@@ -200,6 +201,12 @@ function setDrinkingWaterTarget (type) {
         if (!text) return
         if (type === 'worktimer.drunkWaterTotal') {
             text = utils.accAdd(globalState.default.drunkWaterTotal, text)
+            drinkWater.delayNum = 1
+            drinkWater.surplusDrinkingWater = utils.accSub(globalState.default.drinkingWaterTotal, text)
+            if (!drinkWater.isComplete && drinkWater.surplusDrinkingWater <= 0) {
+                vscode.window.showInformationMessage(`🏅 好耶ヽ(✿ﾟ▽ﾟ)ノ今天的喝水目标达成！`)
+                drinkWater.isComplete = true
+            }
         }
         utils.setConfig(type, Number(text), true)
     })

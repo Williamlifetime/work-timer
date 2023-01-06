@@ -79,3 +79,5 @@ function drinkWaterText () {
 exports.drinkWaterReminderTimeHandle = drinkWaterReminderTimeHandle;
 exports.drinkWaterText = drinkWaterText;
 exports.delayNum = delayNum;
+exports.isComplete = isComplete;
+exports.surplusDrinkingWater = surplusDrinkingWater;
