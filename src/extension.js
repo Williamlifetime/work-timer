@@ -14,7 +14,7 @@ exports.activate = function (context) {
     const configList = ['worktimer.offDutyTime', 'worktimer.reminderTimeBeforeOffDuty', 'worktimer.nickName', 'worktimer.showWelcome', 'worktimer.showReminderTimeBeforeOffDuty', 'worktimer.showSedentaryReminder', 'worktimer.sedentaryReminderTime', 'worktimer.drinkWaterReminderTime', 'worktimer.showDrinkWaterReminder', 'worktimer.drinkingWaterTotal', 'worktimer.drunkWaterTotal', 'worktimer.cupCapacity', 'worktimer.cacheDate'];
     const affected = configList.find(item => event.affectsConfiguration(item));
     if (affected) {
-      utils.refreshData(affected)
+      utils.refreshGlobalState(affected)
       statusBar.updateStatusBarItem()
     }
   });

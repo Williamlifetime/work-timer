@@ -3,15 +3,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require('vscode')
 const moment = require('moment')
 const globalState = require("./globalState");
-const config = vscode.workspace.getConfiguration()
 
 /**
- * 刷新数据状态
+ * 从配置项中获取最新设置赋值给全局仓库
  * @param {String} 配置项名称
  */
-function refreshData (key) {
+function refreshGlobalState (key) {
   const keyArr = key.split('.')
   globalState.default[keyArr[1]] = vscode.workspace.getConfiguration().get(key)
+}
+
+/**
+ * 设置数据值
+ * @param {String} key 配置项名称
+ * @param {Boolean} text 新值
+ * @param {Boolean} isEditConfig 是否修改配置文件值
+ */
+function setConfig (key, text, isEditConfig) {
+  const keyArr = key.split('.')
+  globalState.default[keyArr[1]] = text
+  if (isEditConfig) {
+    vscode.workspace.getConfiguration().update(key, text, true)
+  }
 }
 
 /**
@@ -32,7 +45,6 @@ function timerFilter (params) {
  * @param {*} 功能的key 
  */
 function setMinuteHandle (key) {
-  const keyArr = key.split('.')
   let text = ''
   switch (key) {
     case 'worktimer.sedentaryReminderTime':
@@ -54,8 +66,7 @@ function setMinuteHandle (key) {
     }
   }).then(text => {
     if (!text) return
-    globalState.default[keyArr[1]] = Number(text)
-    config.update(key, Number(text), true)
+    setConfig(key, Number(text), true)
   })
 }
 
@@ -144,7 +155,7 @@ function accDiv (arg1, arg2) {
 
 /**
  * 判断是否和缓存日期是同一天(传入moment对象)
- * @param {*} 比较日期
+ * @param {moment} 比较日期
  * @returns {boolean} 是否是同一天
  */
 function isSameDay (date) {
@@ -154,7 +165,8 @@ function isSameDay (date) {
   return false
 }
 
-exports.refreshData = refreshData;
+exports.refreshGlobalState = refreshGlobalState;
+exports.setConfig = setConfig;
 exports.timerFilter = timerFilter;
 exports.setMinuteHandle = setMinuteHandle;
 exports.accArrayAdd = accArrayAdd;

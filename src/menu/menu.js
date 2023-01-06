@@ -5,6 +5,7 @@ const moment = require('moment');
 const utils = require("../utils");
 const globalState = require("../globalState");
 const config = vscode.workspace.getConfiguration()
+const drinkWater = require("../drinkWater/drinkWater")
 
 /**
  * 总菜单
@@ -137,8 +138,7 @@ function setOffDutyTimeHandle () {
         }
     }).then(text => {
         if (!text) return
-        globalState.default.offDutyTime = text
-        config.update('worktimer.offDutyTime', text, true)
+        utils.setConfig('worktimer.offDutyTime', text, true)
     })
 }
 
@@ -157,8 +157,7 @@ function setNickNameHandle (command) {
         }
     }).then(text => {
         if (!text) return
-        globalState.default.nickName = text
-        config.update('worktimer.nickName', text, true)
+        utils.setConfig('worktimer.nickName', text, true)
         vscode.window.showInformationMessage(`尊敬的${text}~昵称设置成功~`)
     })
 }
@@ -200,12 +199,16 @@ function setDrinkingWaterTarget (type) {
         }
     }).then(text => {
         if (!text) return
-        const keyArr = type.split('.')
         if (type === 'worktimer.drunkWaterTotal') {
             text = utils.accAdd(globalState.default.drunkWaterTotal, text)
+            drinkWater.delayNum = 1
+            drinkWater.surplusDrinkingWater = utils.accSub(globalState.default.drinkingWaterTotal, text)
+            if (!drinkWater.isComplete && drinkWater.surplusDrinkingWater <= 0) {
+                vscode.window.showInformationMessage(`🏅 好耶ヽ(✿ﾟ▽ﾟ)ノ今天的喝水目标达成！`)
+                drinkWater.isComplete = true
+            }
         }
-        globalState.default[keyArr[1]] = Number(text)
-        config.update(type, Number(text), true)
+        utils.setConfig(type, Number(text), true)
     })
 }
 
