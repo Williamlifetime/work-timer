@@ -41,6 +41,18 @@ function timerFilter (params) {
 }
 
 /**
+ * 根据时间差计算返回时分秒字符串
+ * @param {Number} timediff时间差 
+ * @returns String XX时XX分XX秒
+ */
+function timeDiffToStr (timediff) {
+  const hour = parseInt((timediff / 3600) % 24);
+  const minute = parseInt((timediff / 60) % 60);
+  const second = timediff % 60;
+  return timerFilter(hour) + "时" + timerFilter(minute) + "分" + timerFilter(second) + "秒"
+}
+
+/**
  * 设置分钟时间
  * @param {*} 功能的key 
  */
@@ -168,6 +180,7 @@ function isSameDay (date) {
 exports.refreshGlobalState = refreshGlobalState;
 exports.setConfig = setConfig;
 exports.timerFilter = timerFilter;
+exports.timeDiffToStr = timeDiffToStr;
 exports.setMinuteHandle = setMinuteHandle;
 exports.accArrayAdd = accArrayAdd;
 exports.accAdd = accAdd;
