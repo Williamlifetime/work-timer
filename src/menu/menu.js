@@ -13,7 +13,7 @@ const drinkWater = require("../drinkWater/drinkWater")
  */
 function menuHandle (command) {
     const options = [
-        '下班提醒',
+        '午休&下班提醒',
         '久坐提醒',
         '喝水提醒',
         '设置自定义昵称',
@@ -22,7 +22,7 @@ function menuHandle (command) {
         placeHolder: '选择你想要操作的模块'
     }).then(res => {
         switch (res) {
-            case '下班提醒':
+            case '午休&下班提醒':
                 offDutyMenu()
                 break;
             case '设置自定义昵称':
@@ -41,10 +41,12 @@ function menuHandle (command) {
 }
 
 /**
- * 下班提醒
+ * 午休&下班提醒
  */
 function offDutyMenu () {
     const options = [
+        '设置午休时间',
+        '是否开启午休提醒',
         '设置下班时间',
         '设置下班前提醒时间',
     ]
@@ -52,6 +54,12 @@ function offDutyMenu () {
         placeHolder: '选择你的操作'
     }).then(res => {
         switch (res) {
+            case '设置午休时间':
+                setLunchBreakTimeHandle()
+                break;
+            case '是否开启午休提醒':
+                switchHandle('worktimer.showLunchBreakReminder')
+                break
             case '设置下班时间':
                 setOffDutyTimeHandle()
                 break;
@@ -121,6 +129,24 @@ function drinkWaterMenu () {
             default:
                 break;
         }
+    })
+}
+
+/**
+ * 设置午休时间
+ */
+function setLunchBreakTimeHandle () {
+    vscode.window.showInputBox({
+        placeHolder: 'HH:mm-HH:mm',
+        prompt: '输入你的午休时间段(24小时制)例如 11:50-13:30',
+        validateInput: (val) => {
+            if (!(/^(([0-1]?[0-9]|2[0-3]):[0-5][0-9])-(([0-1]?[0-9]|2[0-3]):[0-5][0-9])$/.test(val))) {
+                return '请输入正确的时间段'
+            }
+        }
+    }).then(text => {
+        if (!text) return
+        utils.setConfig('worktimer.lunchBreak', text, true)
     })
 }
 
