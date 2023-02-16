@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/Williamlifetime/work-timer/compare/v0.2.1...v0.3.0) (2023-02-16)
+
+
+### Features
+
+* 新增 午休提醒 功能 支持开关午休提醒、设置午休时间范围 ([3eaf175](https://github.com/Williamlifetime/work-timer/commit/3eaf175eee4c0e6012ede390df7e581234ace377))
+* 新增 根据时间差计算返回时间字符串 工具函数 ([6a9519c](https://github.com/Williamlifetime/work-timer/commit/6a9519cc7b755b53265e514cdb36c803b3aae893))
+
 ## [0.2.1](https://github.com/Williamlifetime/work-timer/compare/v0.2.0...v0.2.1) (2023-01-06)
 
 
