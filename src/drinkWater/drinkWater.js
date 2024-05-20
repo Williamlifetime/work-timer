@@ -60,7 +60,7 @@ function drinkWaterReminderTimeHandle (now) {
                     }
                 }
             } else {
-                delayNum += 1
+                delayNum = Math.ceil(timediff / globalState.default.drinkWaterReminderTime);
             }
         })
     }
