@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.1](https://github.com/Williamlifetime/work-timer/compare/v0.3.0...v0.3.1) (2024-05-21)
+
+
+### Bug Fixes
+
+* 修复 持续工作系数算法缺陷导致反复弹窗 的异常问题 ([83aa074](https://github.com/Williamlifetime/work-timer/commit/83aa074c0f4d87b73fde07d756668d8c744a306e))
+* 修改 自动CI/CD 钩子配置 ([648c450](https://github.com/Williamlifetime/work-timer/commit/648c450ea0c14aab2cd29ca1e2d7ca77b6f9fb80))
+* 更新 自动CI/CD 钩子版本 ([f1e826e](https://github.com/Williamlifetime/work-timer/commit/f1e826e7f32a021f41a3e07aaa467904f209b7b2))
+
 ## [0.3.0](https://github.com/Williamlifetime/work-timer/compare/v0.2.1...v0.3.0) (2023-02-16)
 
 
