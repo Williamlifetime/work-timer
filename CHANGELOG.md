@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/Williamlifetime/work-timer/compare/v0.3.1...v0.4.0) (2026-02-27)
+
+
+### Features
+
+* 新增 自定义提醒 功能 ([48fa695](https://github.com/Williamlifetime/work-timer/commit/48fa6952f536a2e8c0e3bbc110a07e1cc9bc46d4))
+
+
+### Bug Fixes
+
+* 修复多项代码缺陷并优化用户体验 ([cf5673b](https://github.com/Williamlifetime/work-timer/commit/cf5673bb28b60fc820805d005b9da41c6a2e8cf4))
+
 ## [0.3.1](https://github.com/Williamlifetime/work-timer/compare/v0.3.0...v0.3.1) (2024-05-21)
 
 
