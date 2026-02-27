@@ -11,7 +11,7 @@ exports.activate = function (context) {
   context.subscriptions.push(menuCommand);
   // 监听配置项修改
   vscode.workspace.onDidChangeConfiguration(function (event) {
-    const configList = ['worktimer.offDutyTime', 'worktimer.lunchBreak', 'worktimer.showLunchBreakReminder', 'worktimer.reminderTimeBeforeOffDuty', 'worktimer.nickName', 'worktimer.showWelcome', 'worktimer.showReminderTimeBeforeOffDuty', 'worktimer.showSedentaryReminder', 'worktimer.sedentaryReminderTime', 'worktimer.drinkWaterReminderTime', 'worktimer.showDrinkWaterReminder', 'worktimer.drinkingWaterTotal', 'worktimer.drunkWaterTotal', 'worktimer.cupCapacity', 'worktimer.cacheDate'];
+    const configList = ['worktimer.offDutyTime', 'worktimer.lunchBreak', 'worktimer.showLunchBreakReminder', 'worktimer.reminderTimeBeforeOffDuty', 'worktimer.nickName', 'worktimer.showWelcome', 'worktimer.showReminderTimeBeforeOffDuty', 'worktimer.showSedentaryReminder', 'worktimer.sedentaryReminderTime', 'worktimer.drinkWaterReminderTime', 'worktimer.showDrinkWaterReminder', 'worktimer.drinkingWaterTotal', 'worktimer.drunkWaterTotal', 'worktimer.cupCapacity', 'worktimer.cacheDate', 'worktimer.customReminders'];
     const affected = configList.find(item => event.affectsConfiguration(item));
     if (affected) {
       utils.refreshGlobalState(affected)

@@ -19,6 +19,7 @@ let drinkingWaterTotal = config.get('worktimer.drinkingWaterTotal'); // 每日�
 let drunkWaterTotal = config.get('worktimer.drunkWaterTotal'); // 今日饮水总量(ml)
 let cupCapacity = config.get('worktimer.cupCapacity'); // 饮水容器容量(ml)
 let cacheDate = config.get('worktimer.cacheDate'); // 缓存日期
+let customReminders = config.get('worktimer.customReminders'); // 自定义提醒列表
 
 exports.default = {
     /**下班时间*/
@@ -53,4 +54,6 @@ exports.default = {
     cupCapacity,
     /**缓存日期*/
     cacheDate,
+    /**自定义提醒列表*/
+    customReminders,
 };
