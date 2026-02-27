@@ -54,16 +54,23 @@ function timeDiffToStr (timediff) {
 
 /**
  * 设置分钟时间
- * @param {*} 功能的key 
+ * @param {*} 功能的key
  */
 function setMinuteHandle (key) {
   let text = ''
+  let maxValue = 1440 // 默认最大值：24小时（1440分钟）
   switch (key) {
     case 'worktimer.sedentaryReminderTime':
       text = '多久提醒你该起来活动一下(分钟) 例如 60'
+      maxValue = 480 // 最长8小时
       break;
     case 'worktimer.reminderTimeBeforeOffDuty':
-      text = '下班前多久告诉你(分钟) 例如 60'
+      text = '下班前多久告诉你(分钟) 例如 30'
+      maxValue = 180 // 最长3小时
+      break;
+    case 'worktimer.drinkWaterReminderTime':
+      text = '多久提醒你喝水(分钟) 例如 120'
+      maxValue = 480 // 最长8小时
       break;
     default:
       break;
@@ -72,13 +79,16 @@ function setMinuteHandle (key) {
     placeHolder: 'mm',
     prompt: text,
     validateInput: (val) => {
-      if (!(/^\d+$/.test(val)) && val > 0) {
-        return '请输入正确的时间'
+      if (!(/^\d+$/.test(val)) || Number(val) <= 0) {
+        return '请输入正整数分钟数'
+      }
+      if (Number(val) > maxValue) {
+        return `最大不能超过 ${maxValue} 分钟`
       }
     }
-  }).then(text => {
-    if (!text) return
-    setConfig(key, Number(text), true)
+  }).then(inputText => {
+    if (!inputText) return
+    setConfig(key, Number(inputText), true)
   })
 }
 

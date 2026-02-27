@@ -213,7 +213,7 @@ function setDrinkingWaterTarget (type) {
             break;
         case 'worktimer.drunkWaterTotal':
             params.placeHolder = `请输入本次喝水容量(ml)`
-            params.prompt = '填入刚刚在定时计划外喝水的容量'
+            params.prompt = `当前已喝 ${globalState.default.drunkWaterTotal} ml，剩余目标 ${utils.accSub(globalState.default.drinkingWaterTotal, globalState.default.drunkWaterTotal)} ml`
             break;
         default:
             break;
@@ -232,11 +232,11 @@ function setDrinkingWaterTarget (type) {
         if (!text) return
         if (type === 'worktimer.drunkWaterTotal') {
             text = utils.accAdd(globalState.default.drunkWaterTotal, text)
-            drinkWater.delayNum = 1
-            drinkWater.surplusDrinkingWater = utils.accSub(globalState.default.drinkingWaterTotal, text)
-            if (!drinkWater.isComplete && drinkWater.surplusDrinkingWater <= 0) {
+            drinkWater.state.delayNum = 1
+            drinkWater.state.surplusDrinkingWater = utils.accSub(globalState.default.drinkingWaterTotal, text)
+            if (!drinkWater.state.isComplete && drinkWater.state.surplusDrinkingWater <= 0) {
                 vscode.window.showInformationMessage(`🏅 好耶ヽ(✿ﾟ▽ﾟ)ノ今天的喝水目标达成！`)
-                drinkWater.isComplete = true
+                drinkWater.state.isComplete = true
             }
         }
         utils.setConfig(type, Number(text), true)
@@ -245,23 +245,32 @@ function setDrinkingWaterTarget (type) {
 
 /**
  * 是与否选项菜单
- * @param {string} key 
+ * @param {string} key
  */
 function switchHandle (key) {
-    vscode.window.showQuickPick(['开启', '关闭'], {
-        placeHolder: '选择你的操作'
+    const keyArr = key.split('.')
+    const currentValue = globalState.default[keyArr[1]]
+    const currentStatus = currentValue ? ' (当前: 开启)' : ' (当前: 关闭)'
+    const options = [
+        currentValue ? '✅ 开启' : '开启',
+        currentValue ? '关闭' : '❌ 关闭'
+    ]
+
+    vscode.window.showQuickPick(options, {
+        placeHolder: `选择你的操作${currentStatus}`
     }).then(res => {
-        const keyArr = key.split('.')
         switch (res) {
             case '开启':
+            case '✅ 开启':
                 globalState.default[keyArr[1]] = true
                 config.update(key, true, true)
-                vscode.window.showInformationMessage('设置成功~')
+                vscode.window.showInformationMessage('设置成功~ 已开启')
                 break;
             case '关闭':
+            case '❌ 关闭':
                 globalState.default[keyArr[1]] = false
                 config.update(key, false, true)
-                vscode.window.showInformationMessage('设置成功~')
+                vscode.window.showInformationMessage('设置成功~ 已关闭')
                 break;
             default:
                 break;

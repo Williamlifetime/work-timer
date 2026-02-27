@@ -10,6 +10,11 @@ const customReminder = require("../customReminder/customReminder");
 
 let statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
+// 提醒标记，防止重复触发
+let lunchStartNotified = false
+let lunchEndNotified = false
+let beforeOffDutyNotified = false
+
 /**
  * 更新状态栏对象
  */
@@ -46,23 +51,30 @@ function updateStatusBarItem () {
 
 /**
  * 下班前提示
- * @param {Number} hour 
- * @param {Number} minute 
- * @param {Number} second 
+ * @param {Number} hour
+ * @param {Number} minute
+ * @param {Number} second
  */
 function reminderTimeBeforeOffDutyHandle (hour, minute, second) {
     if (!globalState.default.showReminderTimeBeforeOffDuty || globalState.default.isOffDuty) return
     const reminderTimeBeforeOffDuty = globalState.default.reminderTimeBeforeOffDuty
-    if (!globalState.default.isOffDuty && hour === 0 && reminderTimeBeforeOffDuty == minute && second === 59) {
+    // 使用范围匹配（0-2秒内）防止精确匹配丢失
+    const shouldNotify = hour === 0 && reminderTimeBeforeOffDuty == minute && second <= 2
+    if (shouldNotify && !beforeOffDutyNotified) {
+        beforeOffDutyNotified = true
         vscode.window.showInformationMessage(`${globalState.default.nickName}~距离下班只有${minute}分钟了~收拾东西准备回家！！🥳`)
+    }
+    // 重置标记（不在提醒时间段时）
+    if (!shouldNotify) {
+        beforeOffDutyNotified = false
     }
 }
 
 /**
  * 午休提示
- * @param {Number} hour 
- * @param {Number} minute 
- * @param {Number} second 
+ * @param {Number} hour
+ * @param {Number} minute
+ * @param {Number} second
  */
 function reminderTimeWhenLunchBreakHandle () {
     if (!globalState.default.showLunchBreakReminder || globalState.default.isOffDuty) return ''
@@ -77,18 +89,27 @@ function reminderTimeWhenLunchBreakHandle () {
     if (timediff >= lunchBreakDuration) {
         const startTimeDiff = Math.round(start.diff(now) / 1000)
         // 时间差大于午休时间  还没有到午休
-        if (startTimeDiff === 0) {
+        // 使用范围匹配（0-2秒内）防止精确匹配丢失
+        if (startTimeDiff <= 2 && startTimeDiff >= 0 && !lunchStartNotified) {
+            lunchStartNotified = true
             vscode.window.showInformationMessage(`🍱 午休时间到！！！速速停下手中工作！！吃饭啦~~~`)
         }
-        const text = utils.timeDiffToStr(startTimeDiff)
+        // 重置午休结束标记
+        if (startTimeDiff > 2) {
+            lunchEndNotified = false
+        }
+        const text = utils.timeDiffToStr(Math.max(0, startTimeDiff))
         return `⏰ 距离午休还有 ${text} \r\n-----------------------------\r\n`
     } else if (timediff > 0) {
         // 正在午休
+        lunchStartNotified = false // 重置午休开始标记
         const text = utils.timeDiffToStr(timediff)
         return `🕹️ 午休快乐时光还有 ${text} \r\n-----------------------------\r\n`
-    } else if (timediff === 0) {
-        // 刚刚结束午休
+    } else if (timediff <= 0 && timediff >= -2 && !lunchEndNotified) {
+        // 刚刚结束午休（使用范围匹配）
+        lunchEndNotified = true
         vscode.window.showInformationMessage(`⛽ 午休结束啦~~打起精神！！加油`)
+        return ''
     } else {
         // 午休已经结束
         return ''

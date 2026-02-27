@@ -7,10 +7,16 @@ const globalState = require("../globalState");
 
 /**提醒中 */
 let processing = false
-/**今日饮水目标是否完成 */
-let isComplete = false
-/**持续工作系数 */
-let delayNum = 1
+/**状态对象（使用对象便于外部修改） */
+const state = {
+    /**今日饮水目标是否完成 */
+    isComplete: false,
+    /**持续工作系数 */
+    delayNum: 1,
+    /**今日剩余饮水总量 */
+    surplusDrinkingWater: 0
+}
+
 /**今日目标饮水总量 */
 const drinkingWaterTotal = function () {
     return globalState.default.drinkingWaterTotal
@@ -23,44 +29,45 @@ const drunkWaterTotal = function () {
 let cupCapacity = function () {
     return globalState.default.cupCapacity
 }
-/**今日剩余饮水总量 */
-let surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal()) || 0
+
+// 初始化剩余饮水总量
+state.surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal()) || 0
 
 
 /**
  * 喝水提醒
- * @param {Date} 当前时间 
+ * @param {Date} 当前时间
  */
 function drinkWaterReminderTimeHandle (now) {
     // 如果跨日的话，重置剩余饮水总量
     if (!utils.isSameDay(now)) {
-        isComplete = false
+        state.isComplete = false
         utils.setConfig('worktimer.drunkWaterTotal', 0, true)
         utils.setConfig('worktimer.cacheDate', moment().format(), true)
     }
     if (drunkWaterTotal() > drinkingWaterTotal()) {
-        isComplete = true
+        state.isComplete = true
     }
-    if (!globalState.default.showDrinkWaterReminder || isComplete) return
+    if (!globalState.default.showDrinkWaterReminder || state.isComplete) return
     const timediff = now.diff(moment(globalState.default.cacheDate), 'minutes')
-    surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal())
-    if (timediff >= utils.accMul(delayNum, globalState.default.drinkWaterReminderTime) && !processing) {
+    state.surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal())
+    if (timediff >= utils.accMul(state.delayNum, globalState.default.drinkWaterReminderTime) && !processing) {
         processing = true
         vscode.window.showInformationMessage(`🥤 喝水时间到！速速拿起你的水杯饮水！`, ...['喝完了', '等会儿再喝']).then(Selection => {
             processing = false
             if (Selection === '喝完了') {
-                delayNum = 1
+                state.delayNum = 1
                 utils.setConfig('worktimer.cacheDate', moment().format(), true)
-                if (surplusDrinkingWater > 0) {
+                if (state.surplusDrinkingWater > 0) {
                     utils.setConfig('worktimer.drunkWaterTotal', utils.accAdd(drunkWaterTotal(), cupCapacity()), true)
-                    surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal())
-                    if (surplusDrinkingWater <= 0) {
+                    state.surplusDrinkingWater = utils.accSub(drinkingWaterTotal(), drunkWaterTotal())
+                    if (state.surplusDrinkingWater <= 0) {
                         vscode.window.showInformationMessage(`🏅 好耶ヽ(✿ﾟ▽ﾟ)ノ今天的喝水目标达成！`)
-                        isComplete = true
+                        state.isComplete = true
                     }
                 }
             } else {
-                delayNum = Math.ceil(timediff / globalState.default.drinkWaterReminderTime);
+                state.delayNum = Math.ceil(timediff / globalState.default.drinkWaterReminderTime);
             }
         })
     }
@@ -70,7 +77,7 @@ function drinkWaterReminderTimeHandle (now) {
 function drinkWaterText () {
     const textArr = [
         ,
-        isComplete ? '今日饮水目标已达成！' : `今日剩余饮水目标：${surplusDrinkingWater} ml`,
+        state.isComplete ? '今日饮水目标已达成！' : `今日剩余饮水目标：${state.surplusDrinkingWater} ml`,
         `今日已饮水： ${drunkWaterTotal()} ml`,
     ]
     return textArr
@@ -78,6 +85,4 @@ function drinkWaterText () {
 
 exports.drinkWaterReminderTimeHandle = drinkWaterReminderTimeHandle;
 exports.drinkWaterText = drinkWaterText;
-exports.delayNum = delayNum;
-exports.isComplete = isComplete;
-exports.surplusDrinkingWater = surplusDrinkingWater;
+exports.state = state;
