@@ -111,6 +111,11 @@
           "type": "string",
           "default": "2022-12-01",
           "description": "缓存日期"
+        },
+        "worktimer.customReminders": {
+          "type": "array",
+          "default": [],
+          "description": "自定义提醒列表"
         }
       }
     }

@@ -6,6 +6,7 @@ const utils = require("../utils");
 const globalState = require("../globalState");
 const config = vscode.workspace.getConfiguration()
 const drinkWater = require("../drinkWater/drinkWater")
+const customReminder = require("../customReminder/customReminder")
 
 /**
  * 总菜单
@@ -16,6 +17,7 @@ function menuHandle (command) {
         '午休&下班提醒',
         '久坐提醒',
         '喝水提醒',
+        '自定义提醒',
         '设置自定义昵称',
     ]
     vscode.window.showQuickPick(options, {
@@ -33,6 +35,9 @@ function menuHandle (command) {
                 break
             case '喝水提醒':
                 drinkWaterMenu()
+                break
+            case '自定义提醒':
+                customReminder.customReminderMenu()
                 break
             default:
                 break;

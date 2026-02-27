@@ -6,6 +6,7 @@ const utils = require("../utils");
 const globalState = require("../globalState");
 const sedentary = require("../sedentary/sedentary");
 const drinkWater = require("../drinkWater/drinkWater");
+const customReminder = require("../customReminder/customReminder");
 
 let statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
@@ -29,6 +30,7 @@ function updateStatusBarItem () {
     const text = utils.timerFilter(hour) + "时" + utils.timerFilter(minute) + "分" + utils.timerFilter(second) + "秒"
     sedentary.sedentaryReminderTimeHandle(now)
     drinkWater.drinkWaterReminderTimeHandle(now)
+    customReminder.checkCustomReminders(now)
     reminderTimeBeforeOffDutyHandle(hour, minute, second)
     statusBar.text = `${globalState.default.isOffDuty ? '🏃 已经加班 ' : '👨‍💻'}${utils.timerFilter(hour) + "时" + utils.timerFilter(minute) + "分"}`; // 显示文本
     // 浮动提示
